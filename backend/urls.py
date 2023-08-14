@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from cars import views as carsView
+from orders import views as ordersView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,5 +25,11 @@ urlpatterns = [
     path('cars/store', carsView.store_car),
     path('cars/<int:id>', carsView.detail_car),
     path('cars/<int:id>/update', carsView.update_car),
-    path('cars/<int:id>/delete', carsView.delete_car)
+    path('cars/<int:id>/delete', carsView.delete_car),
+    
+    path('orders/list', ordersView.list_order),
+    path('orders/store', ordersView.store_order),
+    path('orders/<int:id>', ordersView.detail_order),
+    path('orders/<int:id>/update', ordersView.update_order),
+    path('orders/<int:id>/delete', ordersView.delete_order)
 ]
