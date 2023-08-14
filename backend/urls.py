@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from cars import views as carsView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('cars/list', carsView.list_car),
+    path('cars/store', carsView.store_car),
+    path('cars/<int:id>', carsView.detail_car),
+    path('cars/<int:id>/update', carsView.update_car),
+    path('cars/<int:id>/delete', carsView.delete_car)
 ]
