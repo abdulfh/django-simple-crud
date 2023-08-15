@@ -1,14 +1,14 @@
 from django.http import JsonResponse
-from admins.models import Admin
-from admins.serializers import AdminSerializers
+from authentication.models import Admin
+from authentication.serializers import AdminSerializers, UserSerializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 
 # Create your views here.
 @api_view(['POST'])
-def register(request):
-    serializer = AdminSerializers(data=request.data)
+def user_register(request):
+    serializer = UserSerializers(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -17,7 +17,7 @@ def register(request):
 
 
 @api_view(['POST'])
-def login(request):
+def admin_register(request):
     serializer = AdminSerializers(data=request.data)
     if serializer.is_valid():
         serializer.save()
