@@ -8,13 +8,14 @@ from rest_framework import status
 # Create your views here.
 @api_view(['GET'])
 def list_order(request):
-    orders = Order.objects.all()
+    orders = filterList(request)
     serializer = OrderSerializers(orders, many=True)
     return JsonResponse({"orders" : serializer.data}, safe=False)
 
 @api_view(['POST'])
 def store_order(request):
-    serializer = OrderSerializers(data=request.data)
+    buildRequest = requestBuilder(request)
+    serializer = OrderSerializers(data=buildRequest.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -24,7 +25,7 @@ def store_order(request):
 @api_view(['GET'])
 def detail_order(request, id):
     try:
-        order = Order.objects.get(pk=id)
+        order = filterDetail(request, id)
     except Order.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
@@ -34,7 +35,7 @@ def detail_order(request, id):
 @api_view(['PUT'])
 def update_order(request, id):
     try:
-        order = Order.objects.get(pk=id)
+        order = filterDetail(request, id)
     except Order.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
@@ -48,10 +49,32 @@ def update_order(request, id):
 @api_view(['DELETE'])
 def delete_order(request, id):
     try:
-        order = Order.objects.get(pk=id)
+        order = filterDetail(request, id)
     except Order.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     order.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+def requestBuilder(request):
+    if request.is_admin:
+        request.data['adminId'] = request.user_id
+        return request
     
+    request.data['userId'] = request.user_id
+    return request
+
+def filterList(request):
+    order = Order.objects.all()
+    if request.is_admin:
+        return order
+    
+    return order.filter(userId=request.user_id).values()
+
+def filterDetail(request, id):
+    order = Order.objects.all()
+    if request.is_admin:
+        return order.get(pk=id)
+    
+    return order.filter(id=id, userId=request.user_id).get()
