@@ -57,16 +57,12 @@ def delete_order(request, id):
     order.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
-def responseBuild(response):
-    for list in response:
-        print(list.carid)
-
 def filterList(request):
     order = Order.objects.all()
     if request.is_admin:
         return order
     
-    return order.filter(userId=request.user_id).values()
+    return order.filter(userId=request.user_id)
 
 def filterDetail(request, id):
     order = Order.objects.all()
