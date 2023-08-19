@@ -1,4 +1,5 @@
 from django.db import models
+from cars.models import Car
 
 # Create your models here.
 class Order(models.Model):
@@ -8,6 +9,6 @@ class Order(models.Model):
     pickUpDate = models.DateField()
     dropOffDate = models.DateField()
     pickUpTime = models.TimeField()
-    carId = models.IntegerField()
+    carId = models.OneToOneField(Car, on_delete=models.RESTRICT)
     userId = models.IntegerField(null=True)
     adminId = models.IntegerField(null=True)

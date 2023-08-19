@@ -9,6 +9,7 @@ from rest_framework import status
 @api_view(['GET'])
 def list_order(request):
     orders = filterList(request)
+    orders.prefetch_related('car')
     serializer = OrderSerializers(orders, many=True)
     return JsonResponse({"orders" : serializer.data}, safe=False)
 
@@ -56,14 +57,9 @@ def delete_order(request, id):
     order.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 
-
-def requestBuilder(request):
-    if request.is_admin:
-        request.data['adminId'] = request.user_id
-        return request
-    
-    request.data['userId'] = request.user_id
-    return request
+def responseBuild(response):
+    for list in response:
+        print(list.carid)
 
 def filterList(request):
     order = Order.objects.all()
