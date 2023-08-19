@@ -84,7 +84,7 @@ DATABASES = {
         'NAME': 'djangobackend',
         'USER': 'newuser',
         'PASSWORD': 'newuser',
-        'HOST': 'localhost',
+        'HOST': 'host.docker.internal',
         'PORT': '5432',
     }
 }
