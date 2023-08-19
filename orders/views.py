@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from orders.models import Order
-from orders.serializers import OrderSerializers
+from orders.serializers import OrderSerializers, OrderUpdateSerializers
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -40,7 +40,7 @@ def update_order(request, id):
     except Order.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
-    serializer = OrderSerializers(order, data=request.data)
+    serializer = OrderUpdateSerializers(order, data=request.data)
     if serializer.is_valid():
         serializer.save()
         return JsonResponse(serializer.data)
