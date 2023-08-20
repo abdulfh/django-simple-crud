@@ -16,7 +16,7 @@ def list_order(request):
 @api_view(['POST'])
 def store_order(request):
     buildRequest = requestBuilder(request)
-    serializer = OrderSerializers(data=buildRequest.data)
+    serializer = OrderUpdateSerializers(data=buildRequest.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -56,6 +56,15 @@ def delete_order(request, id):
 
     order.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+def requestBuilder(request):
+    request.data._mutable = True
+    if request.is_admin:
+        request.data['adminId'] = request.user_id
+        return request
+    
+    request.data['userId'] = request.user_id
+    return request
 
 def filterList(request):
     order = Order.objects.all()
